@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Yahoo OAuth Callback</title>
+<style>
+body{font-family:-apple-system,system-ui,sans-serif;max-width:760px;margin:2em auto;padding:0 1em;color:#222}
+textarea{width:100%;font-family:monospace;font-size:14px;padding:.5em;box-sizing:border-box}
+button{font-size:16px;padding:.5em 1em;margin:.3em 0 1.2em}
+.err{color:#b00020}.ok{color:#0a7d27}
+</style>
+</head>
+<body>
+<h1>Yahoo authorization</h1>
+<p id="status">Reading callback&hellip;</p>
+<h3>Authorization code</h3>
+<textarea id="code" rows="2" readonly></textarea>
+<button onclick="cp('code')">Copy code</button>
+<h3>Full callback URL</h3>
+<textarea id="url" rows="4" readonly></textarea>
+<button onclick="cp('url')">Copy full URL</button>
+<script>
+var p=new URLSearchParams(location.search);
+var code=p.get('code')||'',err=p.get('error');
+document.getElementById('url').value=location.href;
+document.getElementById('code').value=code;
+var s=document.getElementById('status');
+if(err){s.className='err';s.textContent='Yahoo returned an error: '+err+(p.get('error_description')?' — '+p.get('error_description'):'');}
+else if(code){s.className='ok';s.textContent='Got a code. Copy it (or the full URL) back into the assistant chat. It expires in a few minutes and works only once.';}
+else{s.textContent='No code in this URL. This page is the OAuth redirect target; it is only useful right after clicking "Allow" on Yahoo.';}
+function cp(id){var t=document.getElementById(id);t.select();(navigator.clipboard?navigator.clipboard.writeText(t.value):Promise.reject()).catch(function(){document.execCommand('copy')});}
+</script>
+</body>
+</html>
